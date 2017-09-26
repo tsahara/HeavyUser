@@ -13,6 +13,7 @@
 		1F0695831F7A7E4000A248AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F0695811F7A7E4000A248AD /* Main.storyboard */; };
 		1F06958F1F7A7E4100A248AD /* HeavyUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F06958E1F7A7E4100A248AD /* HeavyUserTests.swift */; };
 		1F06959A1F7A7E4100A248AD /* HeavyUserUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0695991F7A7E4100A248AD /* HeavyUserUITests.swift */; };
+		1F0695A81F7A8CF000A248AD /* PlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0695A71F7A8CF000A248AD /* PlotView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		1F0695951F7A7E4100A248AD /* HeavyUserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeavyUserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F0695991F7A7E4100A248AD /* HeavyUserUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeavyUserUITests.swift; sourceTree = "<group>"; };
 		1F06959B1F7A7E4100A248AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F0695A71F7A8CF000A248AD /* PlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlotView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 			children = (
 				1F06957B1F7A7E4000A248AD /* AppDelegate.swift */,
 				1F06957D1F7A7E4000A248AD /* ViewController.swift */,
+				1F0695A71F7A8CF000A248AD /* PlotView.swift */,
 				1F06957F1F7A7E4000A248AD /* Assets.xcassets */,
 				1F0695811F7A7E4000A248AD /* Main.storyboard */,
 				1F0695841F7A7E4000A248AD /* Info.plist */,
@@ -193,6 +196,11 @@
 					1F0695771F7A7E4000A248AD = {
 						CreatedOnToolsVersion = 9.0;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 					1F0695891F7A7E4100A248AD = {
 						CreatedOnToolsVersion = 9.0;
@@ -258,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F06957E1F7A7E4000A248AD /* ViewController.swift in Sources */,
+				1F0695A81F7A8CF000A248AD /* PlotView.swift in Sources */,
 				1F06957C1F7A7E4000A248AD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
