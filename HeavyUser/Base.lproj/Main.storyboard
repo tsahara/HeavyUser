@@ -716,6 +716,9 @@
                             </customView>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="plotView" destination="qtk-Ta-YTe" id="SEj-Uk-rzm"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
