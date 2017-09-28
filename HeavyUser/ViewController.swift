@@ -14,11 +14,8 @@ class ViewController: NSViewController {
     var process: Process?
     var pipe: Pipe?
 
-    var procmap: [Substring: Int] = [:]
-    var proc_index_next = 0
-
-    var act: [[(UInt64, UInt64)]] = []
-    var currentAct: [Substring:(UInt64, UInt64)]
+    var currentAct: [Substring:(UInt64, UInt64)] = [:]
+    var procindex: [Substring:Int] = [:]
     var tick = 0
 
     override func viewDidLoad() {
@@ -42,10 +39,15 @@ class ViewController: NSViewController {
             for line in lines {
                 let csv = line.split(separator: ",")
                 if csv[0] == "time" {
-                    for (process, bytes) in self.currentAct {
-
+                    var acts: [Int:(Substring, UInt64, UInt64)] = [:]
+                    for (process, (in_bytes, out_bytes)) in self.currentAct {
+                        acts[self.procindex[process]!] = (process, in_bytes, out_bytes)
                     }
-                    
+
+                    for i in 0..<self.procindex.count {
+                        print("\(i) => \(acts[i])")
+                    }
+
                     self.tick += 1
                 } else {
                     let process   = csv[1]
@@ -54,9 +56,8 @@ class ViewController: NSViewController {
                     
                     self.currentAct[process] = (bytes_in, bytes_out)
 
-                    if self.procmap[process] == nil {
-                        self.procmap[process] = self.proc_index_next
-                        self.proc_index_next += 1
+                    if self.procindex[process] == nil {
+                        self.procindex[process] = self.procindex.count
                     }
                 }
             }
