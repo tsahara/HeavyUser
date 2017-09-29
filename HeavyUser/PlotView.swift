@@ -14,5 +14,12 @@ class PlotView : NSView {
     override func draw(_ dirtyRect: NSRect) {
         NSColor.white.setFill()
         self.bounds.fill()
+
+        NSColor.blue.setFill()
+        let path = NSBezierPath()
+        path.move(to: NSPoint(x: self.bounds.minX, y: self.bounds.minY))
+        path.line(to: NSPoint(x: self.bounds.midX, y: self.bounds.maxY))
+        path.line(to: NSPoint(x: self.bounds.maxX, y: self.bounds.minY))
+        path.fill()
     }
 }
