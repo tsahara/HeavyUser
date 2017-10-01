@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController {
+class ViewController: NSViewController, PlotViewDataSource {
     @IBOutlet weak var plotView: PlotView!
 
     var process: Process?
@@ -20,6 +20,8 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.plotView.datasource = self
 
         self.pipe = Pipe()
         self.process = Process()
@@ -70,6 +72,11 @@ class ViewController: NSViewController {
         }
     }
 
+    func numberOfPoints(in: PlotView) -> Int {
+        return 6
+    }
 
+    func plotPoint(_ plotView: PlotView, series: Int, interval: Int) -> CGFloat {
+        return 3
+    }
 }
-
