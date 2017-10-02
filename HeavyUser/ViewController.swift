@@ -14,8 +14,14 @@ class ViewController: NSViewController, PlotViewDataSource {
     var process: Process?
     var pipe: Pipe?
 
-    var currentAct: [Substring:(UInt64, UInt64)] = [:]
+    // Process: Substring -> Index: Int
     var procindex: [Substring:Int] = [:]
+
+    var currentAct: [Substring:(UInt64, UInt64)] = [:]
+
+    // history[tick][index] -> a record
+    var history: [[(UInt64, UInt64)]] = []
+
     var tick = 0
 
     override func viewDidLoad() {
@@ -41,16 +47,16 @@ class ViewController: NSViewController, PlotViewDataSource {
             for line in lines {
                 let csv = line.split(separator: ",")
                 if csv[0] == "time" {
-                    var acts: [Int:(Substring, UInt64, UInt64)] = [:]
+                    var record = Array(repeating: (UInt64(0), UInt64(0)), count: self.procindex.count)
                     for (process, (in_bytes, out_bytes)) in self.currentAct {
-                        acts[self.procindex[process]!] = (process, in_bytes, out_bytes)
+                        record[self.procindex[process]!] = (in_bytes, out_bytes)
                     }
-
-                    for i in 0..<self.procindex.count {
-                        print("\(i) => \(acts[i])")
-                    }
-
+                    self.history.append(record)
                     self.tick += 1
+
+                    DispatchQueue.main.async {
+                        self.plotView.needsDisplay = true
+                    }
                 } else {
                     let process   = csv[1]
                     let bytes_in  = UInt64(String(csv[3]))!
@@ -73,10 +79,21 @@ class ViewController: NSViewController, PlotViewDataSource {
     }
 
     func numberOfPoints(in: PlotView) -> Int {
-        return 6
+        return self.history.count - 1
+    }
+
+    func numberOfSeries(in: PlotView) -> Int {
+        return self.procindex.count - 1
     }
 
     func plotPoint(_ plotView: PlotView, series: Int, interval: Int) -> CGFloat {
-        return 3
+        if interval >= self.history.count {
+            return 0.0
+        }
+        if series >= self.history[interval].count {
+            return 0.0
+        }
+        let (in_bytes, out_bytes) = self.history[interval][series]
+        return CGFloat(in_bytes + out_bytes)
     }
 }

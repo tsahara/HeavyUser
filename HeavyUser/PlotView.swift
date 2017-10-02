@@ -12,11 +12,11 @@ import AppKit
 
 protocol PlotViewDataSource {
     func numberOfPoints(in: PlotView) -> Int
+    func numberOfSeries(in: PlotView) -> Int
     func plotPoint(_ plotView: PlotView, series: Int, interval: Int) -> CGFloat
 }
 
 class PlotView : NSView {
-    let data: [Int] = [ 1, 5, 2, 6, 3 ]
     var datasource: PlotViewDataSource?
 
     override func draw(_ dirtyRect: NSRect) {
@@ -25,8 +25,14 @@ class PlotView : NSView {
         }
 
         let data_count = self.datasource!.numberOfPoints(in: self)
+        guard data_count > 0 else {
+            return
+        }
 
-        let maxValue = data.max()!
+        guard self.datasource!.numberOfSeries(in: self) > 0 else {
+            return
+        }
+
         let factorY = self.bounds.height * 0.9
         let stepX = self.bounds.width / CGFloat(data_count)
 
@@ -34,17 +40,23 @@ class PlotView : NSView {
         self.bounds.fill()
 
         NSColor.white.setStroke()
-        NSColor(hue: 0.3, saturation: 0.3, brightness: 0.9, alpha: 1.0).setFill()
+        NSColor(hue: 0.3, saturation: 0.5, brightness: 0.9, alpha: 0.5).setFill()
 
         let path = NSBezierPath()
         path.move(to: NSPoint(x: self.bounds.minX, y: self.bounds.minY))
 
+        var values: [CGFloat] = []
         for i in 0..<data_count {
-            let value = self.datasource!.plotPoint(self, series: 0, interval: i)
+            values.append(self.datasource!.plotPoint(self, series: 0, interval: i))
+        }
+        let maxValue = values.max()!
+
+        for (i, val) in values.enumerated() {
             path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(i),
-                                  y: factorY * (CGFloat(value) / CGFloat(maxValue))))
+                                  y: factorY * (val / maxValue)))
         }
         path.stroke()
+
         path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(data_count - 1), y: self.bounds.minY))
         path.fill()
     }
