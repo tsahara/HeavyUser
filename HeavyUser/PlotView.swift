@@ -29,7 +29,8 @@ class PlotView : NSView {
             return
         }
 
-        guard self.datasource!.numberOfSeries(in: self) > 0 else {
+        let series_count = self.datasource!.numberOfSeries(in: self)
+        guard series_count > 0 else {
             return
         }
 
@@ -50,6 +51,9 @@ class PlotView : NSView {
             values.append(self.datasource!.plotPoint(self, series: 0, interval: i))
         }
         let maxValue = values.max()!
+        if maxValue == 0.0 {
+            return
+        }
 
         for (i, val) in values.enumerated() {
             path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(i),
