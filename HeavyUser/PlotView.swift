@@ -40,28 +40,35 @@ class PlotView : NSView {
         NSColor.white.setFill()
         self.bounds.fill()
 
-        NSColor.white.setStroke()
-        NSColor(hue: 0.3, saturation: 0.5, brightness: 0.9, alpha: 0.5).setFill()
+        var stacked = [CGFloat](repeating: 0.0, count: data_count)
 
-        let path = NSBezierPath()
-        path.move(to: NSPoint(x: self.bounds.minX, y: self.bounds.minY))
+        for series in 0..<series_count {
+            NSColor.white.setStroke()
+            NSColor(hue: (0.3 * CGFloat(series+1)).truncatingRemainder(dividingBy: 1.0), saturation: 0.5, brightness: 0.9, alpha: 0.5).setFill()
 
-        var values: [CGFloat] = []
-        for i in 0..<data_count {
-            values.append(self.datasource!.plotPoint(self, series: 0, interval: i))
+            let path = NSBezierPath()
+            path.move(to: NSPoint(x: self.bounds.minX, y: self.bounds.minY))
+
+            var values: [CGFloat] = []
+            for i in 0..<data_count {
+                let val = self.datasource!.plotPoint(self, series: series, interval: i)
+                values.append(val)
+                stacked[i] += val
+            }
+            let maxValue = stacked.max()!
+            if maxValue == 0.0 {
+                return
+            }
+            print("series \(series) stacked=\(stacked)")
+
+            for (i, val) in stacked.enumerated() {
+                path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(i),
+                                      y: factorY * (val / maxValue)))
+            }
+            path.stroke()
+
+            path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(data_count - 1), y: self.bounds.minY))
+            path.fill()
         }
-        let maxValue = values.max()!
-        if maxValue == 0.0 {
-            return
-        }
-
-        for (i, val) in values.enumerated() {
-            path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(i),
-                                  y: factorY * (val / maxValue)))
-        }
-        path.stroke()
-
-        path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(data_count - 1), y: self.bounds.minY))
-        path.fill()
     }
 }
