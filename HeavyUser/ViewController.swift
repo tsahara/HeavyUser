@@ -47,11 +47,15 @@ class ViewController: NSViewController, PlotViewDataSource {
             for line in lines {
                 let csv = line.split(separator: ",")
                 if csv[0] == "time" {
+                    if self.currentAct.count == 0 {
+                        continue
+                    }
                     var record = Array(repeating: (UInt64(0), UInt64(0)), count: self.procindex.count)
                     for (process, (in_bytes, out_bytes)) in self.currentAct {
                         record[self.procindex[process]!] = (in_bytes, out_bytes)
                     }
                     self.history.append(record)
+                    self.currentAct = [:]
                     self.tick += 1
 
                     DispatchQueue.main.async {
@@ -87,7 +91,7 @@ class ViewController: NSViewController, PlotViewDataSource {
     }
 
     func plotPoint(_ plotView: PlotView, series: Int, interval: Int) -> CGFloat {
-        if interval >= self.history.count {
+        if interval >= self.history.count - 1 {
             return 0.0
         }
         if series >= self.history[interval].count {
