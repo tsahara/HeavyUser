@@ -35,7 +35,7 @@ class PlotView : NSView {
         }
 
         let factorY = self.bounds.height * 0.9
-        let stepX = self.bounds.width / CGFloat(data_count)
+        let stepX = self.bounds.width / 20
 
         NSColor.white.setFill()
         self.bounds.fill()
