@@ -70,5 +70,15 @@ class PlotView : NSView {
             path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(data_count - 1), y: self.bounds.minY))
             path.fill()
         }
+
+        for x in 0..<20 {
+            let pattern: [CGFloat] = [ 1.0, 2.0 ]
+            let path = NSBezierPath()
+            NSColor.lightGray.setStroke()
+            path.setLineDash(pattern, count: pattern.count, phase: 0.0)
+            path.move(to: NSPoint(x: CGFloat(x) * stepX, y: self.bounds.minY))
+            path.line(to: NSPoint(x: CGFloat(x) * stepX, y: self.bounds.maxY))
+            path.stroke()
+        }
     }
 }
