@@ -24,6 +24,8 @@ class ViewController: NSViewController, PlotViewDataSource {
 
     var tick = 0
 
+    var buffer: String = ""
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,8 +44,12 @@ class ViewController: NSViewController, PlotViewDataSource {
 
         self.pipe!.fileHandleForReading.readabilityHandler = {
             handle in
-            let str = String(data: handle.availableData, encoding: String.Encoding.ascii)!
-            let lines = str.split(separator: "\n")
+            self.buffer += String(data: handle.availableData, encoding: String.Encoding.ascii)!
+            var lines = self.buffer.split(separator: "\n", maxSplits: Int.max, omittingEmptySubsequences: false)
+
+            let last = lines.popLast()!
+            self.buffer = String(last)
+
             for line in lines {
                 let csv = line.split(separator: ",")
                 if csv[0] == "time" {
