@@ -40,7 +40,7 @@ class PlotView : NSView {
         NSColor.white.setFill()
         self.bounds.fill()
 
-        var stacked = [CGFloat](repeating: 0.0, count: data_count)
+        var stacked = [CGFloat](repeating: 0.0, count: 20)
 
         for series in 0..<series_count {
             NSColor.white.setStroke()
@@ -49,25 +49,31 @@ class PlotView : NSView {
             let path = NSBezierPath()
             path.move(to: NSPoint(x: self.bounds.minX, y: self.bounds.minY))
 
-            var values: [CGFloat] = []
-            for i in 0..<data_count {
+            let left: Int, right: Int
+            if data_count < 20 {
+                left = 0
+                right = data_count
+            } else {
+                left = data_count - 20
+                right = data_count
+            }
+            for i in left..<right {
                 let val = self.datasource!.plotPoint(self, series: series, interval: i)
-                values.append(val)
-                stacked[i] += val
+                stacked[i - left] += val
             }
             let maxValue = stacked.max()!
-            if maxValue == 0.0 {
-                return
-            }
+
             print("series \(series) stacked=\(stacked)")
 
-            for (i, val) in stacked.enumerated() {
-                path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(i),
-                                      y: factorY * (val / maxValue)))
+            if maxValue > 0.0 {
+                for (i, val) in stacked.enumerated() {
+                    path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(i),
+                                          y: factorY * (val / maxValue)))
+                }
+                path.stroke()
             }
-            path.stroke()
 
-            path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(data_count - 1), y: self.bounds.minY))
+            path.line(to: NSPoint(x: self.bounds.minX + stepX * CGFloat(20 - 1), y: self.bounds.minY))
             path.fill()
         }
 
